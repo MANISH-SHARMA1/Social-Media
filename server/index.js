@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const dbConnect = require("./dbConnect");
 const authRouter = require("./routers/authRouters");
 const postsRouter = require("./routers/postsRouter");
+const cookieParser = require("cookie-parser");
 
 const morgan = require("morgan");
 dotenv.config("./dot.env");
@@ -12,6 +13,7 @@ const app = express();
 //middlewares
 app.use(express.json());
 app.use(morgan("common"));
+app.use(cookieParser());
 
 app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
