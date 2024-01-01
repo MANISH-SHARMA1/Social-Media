@@ -11,6 +11,7 @@ function Signup() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
+      console.log('handle submit called');
       const result = await axiosClient.post("/auth/signup", {
         name,
         email,

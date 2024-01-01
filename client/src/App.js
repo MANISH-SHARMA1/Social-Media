@@ -6,10 +6,26 @@ import RequireUser from "./components/RequireUser";
 import Feed from "./components/feed/Feed";
 import Profile from "./components/profile/Profile";
 import UpdateProfile from "./components/updateProfile/UpdateProfile";
+import { useSelector } from "react-redux";
+import { useEffect, useRef } from "react";
+import LoadingBar from "react-top-loading-bar";
+import OnlyIfNotLoggedIn from "./components/OnlyIfNotLoggedIn";
 
 function App() {
+  const isLoading = useSelector((state) => state.appConfigReducer.isLoading);
+  const loadingRef = useRef(null);
+
+  useEffect(() => {
+    if (isLoading) {
+      loadingRef.current?.continuousStart();
+    } else {
+      loadingRef.current?.complete();
+    }
+  }, [isLoading]);
+
   return (
     <div className="App">
+      <LoadingBar color="#000" ref={loadingRef} />
       <Routes>
         <Route element={<RequireUser />}>
           <Route element={<Home />}>
@@ -18,8 +34,10 @@ function App() {
             <Route path="/updateProfile" element={<UpdateProfile />} />
           </Route>
         </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route element={<OnlyIfNotLoggedIn />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Route>
       </Routes>
     </div>
   );

@@ -15,7 +15,6 @@ export const axiosClient = axios.create({
 axiosClient.interceptors.request.use((request) => {
   const accessToken = getItem(KEY_ACCESS_TOKEN);
   request.headers["Authorization"] = `Bearer ${accessToken}`;
-
   return request;
 });
 
@@ -30,17 +29,6 @@ axiosClient.interceptors.response.use(async (response) => {
   const statusCode = data.statusCode;
   const error = data.error;
 
-  if (
-    //when refresh token expires, send user to login page
-    statusCode === 401 &&
-    originalRequest.url ===
-      `${process.env.REACT_APP_SERVER_BASE_URL}/auth/refresh`
-  ) {
-    removeItem(KEY_ACCESS_TOKEN);
-    window.location.replace("/login", "_self");
-    return Promise.reject(error);
-  }
-
   //means the access token expired
   if (statusCode === 401 && !originalRequest._retry) {
     originalRequest._retry = true;
@@ -53,13 +41,17 @@ axiosClient.interceptors.response.use(async (response) => {
 
     console.log("Response from backend", response);
 
-    if (response.status === "ok") {
-      setItem(KEY_ACCESS_TOKEN, response.result.accessToken);
+    if (response.data.status === "ok") {
+      setItem(KEY_ACCESS_TOKEN, response.data.result.accessToken);
       originalRequest.headers[
         "Authorization"
-      ] = `Bearer ${response.result.accessToken}`;
+      ] = `Bearer ${response.data.result.accessToken}`;
 
       return axios(originalRequest);
+    } else {
+      removeItem(KEY_ACCESS_TOKEN);
+      window.location.replace("/login", "_self");
+      return Promise.reject(error);
     }
   }
 
