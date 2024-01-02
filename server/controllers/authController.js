@@ -65,6 +65,7 @@ const loginController = async (req, res) => {
 
     return res.send(success(201, { accessToken }));
   } catch (e) {
+    console.log("error from login", e);
     return res.send(error(401, e));
   }
 };

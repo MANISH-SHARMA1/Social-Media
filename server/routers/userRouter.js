@@ -9,17 +9,13 @@ router.post(
   userController.followOrUnfollowUserController
 );
 
-router.get(
-  "/getPostOfFollowing",
-  requireUser,
-  userController.getPostsOfFollowing
-);
+router.get("/getFeedData", requireUser, userController.getPostsOfFollowing);
 
 router.get("/getMyPosts", requireUser, userController.getMyPosts);
 router.get("/getUserPosts", requireUser, userController.getUserPosts);
 router.delete("/", requireUser, userController.deleteMyProfile);
-router.get('/getMyInfo', requireUser, userController.getMyInfo)
-router.put('/', requireUser, userController.updateUserProfile);
-router.post('/getUserProfile', requireUser, userController.getUserProfile)
+router.get("/getMyInfo", requireUser, userController.getMyInfo);
+router.put("/", requireUser, userController.updateUserProfile);
+router.post("/getUserProfile", requireUser, userController.getUserProfile);
 
 module.exports = router;

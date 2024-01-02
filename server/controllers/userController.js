@@ -49,16 +49,29 @@ const followOrUnfollowUserController = async (req, res) => {
 const getPostsOfFollowing = async (req, res) => {
   try {
     const curUserId = req._id;
+    const curUser = await User.findById(curUserId).populate("followings");
 
-    const curUser = await User.findById(curUserId);
-    const posts = await Posts.find({
+    const fullPosts = await Posts.find({
       owner: {
         $in: curUser.followings,
       },
-    });
+    }).populate("owner");
 
-    return res.send(success(200, posts));
+    const posts = fullPosts
+      .map((item) => mapPostOutput(item, req._id))
+      .reverse();
+
+    const followingsIds = curUser.followings.map((item) => item._id);
+    followingsIds.push(req._id);
+
+    const suggestions = await User.find({
+      _id: {
+        $nin: followingsIds,
+      },
+    });
+    return res.send(success(200, { ...curUser._doc, suggestions, posts }));
   } catch (e) {
+    console.log(e);
     return res.send(error(500, e.message));
   }
 };
@@ -177,7 +190,7 @@ const updateUserProfile = async (req, res) => {
     await user.save();
     return res.send(success(200, { user }));
   } catch (e) {
-    console.log(e);
+    console.log("error: ", e);
     return res.send(error(500, e.message));
   }
 };

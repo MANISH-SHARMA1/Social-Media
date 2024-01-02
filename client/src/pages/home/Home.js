@@ -8,8 +8,12 @@ function Home() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getMyInfo());
-  }, []);
+    try {
+      dispatch(getMyInfo());
+    } catch (error) {
+      console.log(error);
+    }
+  }, [dispatch]);
 
   return (
     <>

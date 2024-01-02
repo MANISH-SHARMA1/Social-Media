@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import "./CreatePost.scss";
 import Avatar from "../avatar/Avatar";
-import userImage from "../../assets/user.png";
-import backgroundDummyImg from "../../assets/background.jpg";
 import { BsCardImage } from "react-icons/bs";
 import { axiosClient } from "../../utils/axiosClient";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/slices/appConfigSlice";
+import { getUserProfile } from "../../redux/slices/postsSlice";
 
 function CreatePost() {
   const [postImg, setPostImg] = useState("");
   const [caption, setCaption] = useState("");
   const dispatch = useDispatch();
+  const myProfile = useSelector((state) => state.appConfigReducer.myProfile);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -20,23 +20,23 @@ function CreatePost() {
     fileReader.onload = () => {
       if (fileReader.readyState === fileReader.DONE) {
         setPostImg(fileReader.result);
-        
       }
     };
   };
 
   const handlePostSubmit = async () => {
     try {
-      dispatch(setLoading(true));
+      // dispatch(setLoading(true));
       const result = await axiosClient.post("/posts/", {
         caption,
         postImg,
       });
       console.log("post done", result);
+      dispatch(getUserProfile({ userId: myProfile?._id }));
     } catch (error) {
-      console.log("error", error);
+      console.log("error aaya", error);
     } finally {
-      dispatch(setLoading(false));
+      // dispatch(setLoading(false));
       setCaption("");
       setPostImg("");
     }
@@ -45,7 +45,7 @@ function CreatePost() {
   return (
     <div className="CreatePost">
       <div className="left-part">
-        <Avatar />
+        <Avatar src={myProfile?.avatar?.url} />
       </div>
       <div className="right-part">
         <input

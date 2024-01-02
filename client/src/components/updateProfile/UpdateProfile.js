@@ -30,7 +30,7 @@ function UpdateProfile() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(name, bio, userImg);
+    // console.log(name, bio, userImg);
     dispatch(
       updateMyProfile({
         name,
