@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Profile.scss";
 import Posts from "../posts/Posts";
-import userImg from "../../assets/user.png";
 import { useNavigate, useParams } from "react-router-dom";
 import CreatePost from "../createPost/CreatePost";
 import { useDispatch, useSelector } from "react-redux";

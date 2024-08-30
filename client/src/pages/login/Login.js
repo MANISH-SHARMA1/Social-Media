@@ -12,7 +12,7 @@ function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const response = await axiosClient.post("/auth/login", {
+      const response = await axiosClient.post("auth/login", {
         email,
         password,
       });

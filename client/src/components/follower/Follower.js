@@ -8,25 +8,35 @@ import { followAndUnfollowUser } from "../../redux/slices/feedSlice";
 function Follower({ user }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const feedData = useSelector((state) => state.feedDataReducer.feedData);
+  const feedData = useSelector((state) => state?.feedDataReducer?.feedData);
   const [isFollowing, setIsFollowing] = useState();
 
   useEffect(() => {
-    setIsFollowing(feedData.followings.find((item) => item._id === user._id));
+    try {
+      setIsFollowing(
+        feedData.followings.find((item) => item._id === user._id)
+      );
+    } catch (error) {
+      return;
+    }
   }, [feedData]);
 
   function handleUserFollow() {
-    dispatch(
-      followAndUnfollowUser({
-        userIdToFollow: user._id,
-      })
-    );
+    try {
+      dispatch(
+        followAndUnfollowUser({
+          userIdToFollow: user?._id,
+        })
+      );
+    } catch (error) {
+      return;
+    }
   }
   return (
     <div className="Follower">
       <div
         className="user-info"
-        onClick={() => navigate(`/profile/${user._id}`)}
+        onClick={() => navigate(`/profile/${user?._id}`)}
       >
         <Avatar src={user?.avatar?.url} />
         <h4 className="name">{user?.name}</h4>

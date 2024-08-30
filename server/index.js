@@ -9,12 +9,12 @@ const cors = require("cors");
 const morgan = require("morgan");
 const cloudinary = require("cloudinary").v2;
 
-dotenv.config("./dot.env");
+dotenv.config();
 
 cloudinary.config({
-  cloud_name: "djfo5hloh",
-  api_key: "461488537141589",
-  api_secret: "O3I4d-1C6QvCxdviWj3IRgTNQBw",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 const app = express();

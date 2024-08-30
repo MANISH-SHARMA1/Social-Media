@@ -4,7 +4,6 @@ import Avatar from "../avatar/Avatar";
 import { BsCardImage } from "react-icons/bs";
 import { axiosClient } from "../../utils/axiosClient";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "../../redux/slices/appConfigSlice";
 import { getUserProfile } from "../../redux/slices/postsSlice";
 
 function CreatePost() {
@@ -26,17 +25,14 @@ function CreatePost() {
 
   const handlePostSubmit = async () => {
     try {
-      // dispatch(setLoading(true));
-      const result = await axiosClient.post("/posts/", {
+      await axiosClient.post("posts/", {
         caption,
         postImg,
       });
-      console.log("post done", result);
       dispatch(getUserProfile({ userId: myProfile?._id }));
     } catch (error) {
-      console.log("error aaya", error);
+      return
     } finally {
-      // dispatch(setLoading(false));
       setCaption("");
       setPostImg("");
     }

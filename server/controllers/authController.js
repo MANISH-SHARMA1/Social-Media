@@ -83,7 +83,7 @@ const refreshAccessTokenController = async (req, res) => {
   try {
     const decoded = jwt.verify(
       refreshToken,
-      "process.env.REFRESH_TOKEN_PRIVATE_KEY"
+      process.env.REFRESH_TOKEN_PRIVATE_KEY
     );
 
     const _id = decoded._id;
@@ -110,25 +110,23 @@ const logoutController = async (req, res) => {
 // internal functions
 const generateAccessToken = (data) => {
   try {
-    const token = jwt.sign(data, "process.env.ACCESS_TOKEN_PRIVATE_KEY", {
+    const token = jwt.sign(data, process.env.ACCESS_TOKEN_PRIVATE_KEY, {
       expiresIn: "1d",
     });
-    console.log(token);
     return token;
   } catch (error) {
-    console.log("Errorr: ", error);
+    return
   }
 };
 
 const generateRefreshToken = (data) => {
   try {
-    const token = jwt.sign(data, "process.env.REFRESH_TOKEN_PRIVATE_KEY", {
+    const token = jwt.sign(data, process.env.REFRESH_TOKEN_PRIVATE_KEY, {
       expiresIn: "1y",
     });
-    console.log(token);
     return token;
   } catch (error) {
-    console.log("Errorr: ", error);
+    return
   }
 };
 

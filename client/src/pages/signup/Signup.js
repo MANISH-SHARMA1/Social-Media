@@ -1,21 +1,37 @@
 import React, { useState } from "react";
 import "./Signup.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { axiosClient } from "../../utils/axiosClient";
+import { KEY_ACCESS_TOKEN, setItem } from "../../utils/localStorageManager";
 
 function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-       await axiosClient.post("/auth/signup", {
+      await axiosClient.post("auth/signup", {
         name,
         email,
         password,
       });
+      loginUser();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function loginUser() {
+    try {
+      const response = await axiosClient.post("auth/login", {
+        email,
+        password,
+      });
+      setItem(KEY_ACCESS_TOKEN, response.result.accessToken);
+      navigate("/");
     } catch (error) {
       console.log(error);
     }

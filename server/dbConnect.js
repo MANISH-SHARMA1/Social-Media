@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 const { ServerApiVersion } = require("mongodb");
 
 module.exports = async () => {
-  let mongoUri =
-    "mongodb+srv://g80638584:JKytNELc50OvD7GN@cluster0.8e91au6.mongodb.net/?retryWrites=true&w=majority";
+  let mongoUri = process.env.MONGO_URI
 
   try {
     const connect = await mongoose.connect(mongoUri, {

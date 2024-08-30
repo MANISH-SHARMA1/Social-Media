@@ -39,14 +39,7 @@ axiosClient.interceptors.response.use(
     const originalRequest = response.config;
     const statusCode = data.statusCode;
     const error = data.message;
-    console.log(
-      "originaRequest: ",
-      originalRequest,
-      "statusCode: ",
-      statusCode,
-      "error: ",
-      error
-    );
+ 
 
     store.dispatch(
       showToast({
@@ -64,8 +57,6 @@ axiosClient.interceptors.response.use(
           withCredentials: true,
         })
         .get(`${baseURL}auth/refresh`);
-
-      console.log("Response from backend", response);
 
       if (response.data.status === "ok") {
         setItem(KEY_ACCESS_TOKEN, response.data.result.accessToken);

@@ -1,7 +1,6 @@
 import React from "react";
 import "./Posts.scss";
 import Avatar from "../avatar/Avatar";
-import backgroundImg from "../../assets/background.jpg";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { likeAndUnlikePost } from "../../redux/slices/postsSlice";
@@ -11,10 +10,7 @@ function Posts({ post }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log('postData', post);
-
   async function handlePostLiked() {
-    
     dispatch(
       likeAndUnlikePost({
         postId: post?._id,
@@ -24,7 +20,10 @@ function Posts({ post }) {
 
   return (
     <div className="Post">
-      <div className="heading" onClick={()=> navigate(`/profile/${post?.owner?._id}`)}>
+      <div
+        className="heading"
+        onClick={() => navigate(`/profile/${post?.owner?._id}`)}
+      >
         <Avatar src={post?.owner?.avatar?.url} />
         <h4>{post.owner?.name}</h4>
       </div>
@@ -35,7 +34,11 @@ function Posts({ post }) {
 
       <div className="footer">
         <div className="like" onClick={handlePostLiked}>
-          {post?.isLiked ? <AiFillHeart style={{color: "red"}} className="icon" /> : <AiOutlineHeart className="icon" />}
+          {post?.isLiked ? (
+            <AiFillHeart style={{ color: "red" }} className="icon" />
+          ) : (
+            <AiOutlineHeart className="icon" />
+          )}
           <h4>{`${post?.likesCount} likes`}</h4>
         </div>
         <p className="caption">{post?.caption}</p>

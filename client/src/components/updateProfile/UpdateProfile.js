@@ -3,12 +3,17 @@ import "./UpdateProfile.scss";
 import userImage from "../../assets/user.png";
 import { useDispatch, useSelector } from "react-redux";
 import { updateMyProfile } from "../../redux/slices/appConfigSlice";
+import { axiosClient } from "../../utils/axiosClient";
+import { KEY_ACCESS_TOKEN, removeItem } from "../../utils/localStorageManager";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function UpdateProfile() {
   const myProfile = useSelector((state) => state.appConfigReducer.myProfile);
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [userImg, setUserImg] = useState("");
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,7 +35,6 @@ function UpdateProfile() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    // console.log(name, bio, userImg);
     dispatch(
       updateMyProfile({
         name,
@@ -38,6 +42,17 @@ function UpdateProfile() {
         userImg,
       })
     );
+  }
+
+  async function handleDeleteProfile() {
+    try {
+      const response = await axiosClient.delete("user/");
+      toast.success(response.result);
+      removeItem(KEY_ACCESS_TOKEN);
+      navigate("/signup");
+    } catch (error) {
+      return;
+    }
   }
 
   return (
@@ -79,7 +94,12 @@ function UpdateProfile() {
             />
           </form>
 
-          <button className="delete-account btn-primary">Delete Account</button>
+          <button
+            className="delete-account btn-primary"
+            onClick={handleDeleteProfile}
+          >
+            Delete Account
+          </button>
         </div>
       </div>
     </div>

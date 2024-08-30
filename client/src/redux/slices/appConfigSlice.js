@@ -2,38 +2,25 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosClient } from "../../utils/axiosClient";
 // use redux thunk to do any async function reducers are pure functions.
 
-export const getMyInfo = createAsyncThunk(
-  "user/getMyInfo",
-  // async (_, thunkAPI) => {
-  async () => {
-    try {
-      // thunkAPI.dispatch(setLoading(true));
-      const response = await axiosClient.get("/user/getMyInfo");
-      return response.result;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-    // finally {
-    //   thunkAPI.dispatch(setLoading(false));
-    // }
+export const getMyInfo = createAsyncThunk("user/getMyInfo", async () => {
+  try {
+    const response = await axiosClient.get("user/getMyInfo");
+    return response.result;
+  } catch (error) {
+    return Promise.reject(error);
   }
-);
+});
 
 export const updateMyProfile = createAsyncThunk(
   "user/updateMyProfile",
   async (body) => {
     try {
-      // thunkAPI.dispatch(setLoading(true));
-      const response = await axiosClient.put("/user/", body);
-      // console.log('result from response', response.result);
+      const response = await axiosClient.put("user/", body);
       return response.result;
     } catch (error) {
       console.log("error", error);
       return Promise.reject(error);
     }
-    // finally {
-    //   thunkAPI.dispatch(setLoading(false));
-    // }
   }
 );
 

@@ -13,7 +13,7 @@ const followOrUnfollowUserController = async (req, res) => {
     const curUser = await User.findById(curUserId);
 
     if (curUserId === userIdToFollow) {
-      return res.send(error(409, "Users cannot follow yourself"));
+      return res.send(error(409, "You cannot follow yourself"));
     }
 
     if (!userToFollow) {
@@ -31,7 +31,26 @@ const followOrUnfollowUserController = async (req, res) => {
       await userToFollow.save();
       await curUser.save();
 
-      return res.send(success(200, "User unfollowed"));
+      const fullPosts = await Posts.find({
+        owner: {
+          $in: curUser.followings,
+        },
+      }).populate("owner");
+
+      const posts = fullPosts
+        .map((item) => mapPostOutput(item, req._id))
+        .reverse();
+
+      const followingsIds = curUser.followings.map((item) => item._id);
+      followingsIds.push(req._id);
+
+      const suggestions = await User.find({
+        _id: {
+          $nin: followingsIds,
+        },
+      });
+
+      return res.send(success(200, { userToFollow, posts, suggestions }));
     } else {
       userToFollow.followers.push(curUserId);
       curUser.followings.push(userIdToFollow);
@@ -39,7 +58,26 @@ const followOrUnfollowUserController = async (req, res) => {
       await userToFollow.save();
       await curUser.save();
 
-      return res.send(success(200, "User followed"));
+      const fullPosts = await Posts.find({
+        owner: {
+          $in: curUser.followings,
+        },
+      }).populate("owner");
+
+      const posts = fullPosts
+        .map((item) => mapPostOutput(item, req._id))
+        .reverse();
+
+      const followingsIds = curUser.followings.map((item) => item._id);
+      followingsIds.push(req._id);
+
+      const suggestions = await User.find({
+        _id: {
+          $nin: followingsIds,
+        },
+      });
+
+      return res.send(success(200, { userToFollow, posts, suggestions }));
     }
   } catch (e) {
     res.send(error(500, e.message));
